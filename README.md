@@ -38,3 +38,11 @@ Additional status:
 ```text
 blocked
 ```
+
+## Run and debug
+
+1. Install dependencies: `npm install`
+2. Build extension: `npm run build`
+3. Open **Run and Debug** in VSCode.
+4. Start `Run SpecFlow Extension`.
+5. In Extension Development Host, run commands like `SDD: Open Dashboard` from Command Palette.

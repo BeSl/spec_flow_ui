@@ -1,10 +1,10 @@
 # Status
 
-Current status: approved
+Current status: review
 
 ## Current focus
 
-Start implementation from `TASK-0001 Create VSCode extension skeleton`.
+Implementation complete for `TASK-0001` through `TASK-0014`.
 
 ## Blockers
 
@@ -12,4 +12,4 @@ None.
 
 ## Next action
 
-Give `prompt-for-codex.md` to local Codex.
+Run manual VSCode UX verification and move status to `done` after final product review.

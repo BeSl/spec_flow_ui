@@ -10,6 +10,7 @@ import { openTaskBoard } from "../webview/taskBoardPanel";
 import { buildTaskPrompt } from "../services/promptService";
 import { validateWorkspace } from "../services/validationService";
 import { detectCompatibility } from "../services/compatibilityService";
+import { runReleaseQaChecks } from "../services/releaseQaService";
 
 type CommandRegistration = [string, (...args: unknown[]) => Promise<void>];
 
@@ -246,6 +247,37 @@ export function registerCommands(context: vscode.ExtensionContext, specTreeProvi
       output.appendLine(`Total findings: ${findings.length}`);
       output.show(true);
       await vscode.window.showInformationMessage(`Compatibility detection found ${findings.length} hint(s).`);
+    }],
+    ["specflow.runReleaseQa", async () => {
+      const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+      if (!workspaceFolder) {
+        await vscode.window.showErrorMessage("Open a workspace folder before running release QA.");
+        return;
+      }
+
+      const output = vscode.window.createOutputChannel("SpecFlow Release QA");
+      output.clear();
+      output.appendLine("Release QA checks started...");
+
+      const results = await runReleaseQaChecks(workspaceFolder.uri.fsPath);
+      let passedCount = 0;
+
+      for (const result of results) {
+        const mark = result.passed ? "PASS" : "FAIL";
+        output.appendLine(`[${mark}] ${result.name}: ${result.details}`);
+        if (result.passed) {
+          passedCount += 1;
+        }
+      }
+
+      output.appendLine(`Summary: ${passedCount}/${results.length} checks passed.`);
+      output.show(true);
+
+      if (passedCount === results.length) {
+        await vscode.window.showInformationMessage("Release QA checks passed.");
+      } else {
+        await vscode.window.showWarningMessage("Release QA checks found issues. See 'SpecFlow Release QA' output.");
+      }
     }]
   ];
 

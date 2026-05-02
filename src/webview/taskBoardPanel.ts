@@ -4,17 +4,32 @@ import { Task } from "../model";
 const STATUS_ORDER: Task["status"][] = ["todo", "ready", "in-progress", "review", "done", "blocked"];
 
 export function openTaskBoard(tasksFilePath: string, tasks: Task[]): void {
+  const isRussian = vscode.env.language.toLowerCase().startsWith("ru");
   const panel = vscode.window.createWebviewPanel(
     "specflow.taskBoard",
-    "SpecFlow Task Board",
+    isRussian ? "Доска задач SpecFlow" : "SpecFlow Task Board",
     vscode.ViewColumn.One,
     { enableScripts: true, enableCommandUris: true }
   );
 
-  panel.webview.html = renderTaskBoardHtml(tasksFilePath, tasks);
+  panel.webview.html = renderTaskBoardHtml(tasksFilePath, tasks, isRussian);
 }
 
-function renderTaskBoardHtml(tasksFilePath: string, tasks: Task[]): string {
+function renderTaskBoardHtml(tasksFilePath: string, tasks: Task[], isRussian: boolean): string {
+  const t = {
+    title: isRussian ? "Доска задач" : "Task Board",
+    noTasks: isRussian ? "Нет задач" : "No tasks"
+  };
+
+  const statusTitles: Record<Task["status"], string> = {
+    "todo": isRussian ? "К выполнению" : "Todo",
+    "ready": isRussian ? "Готово" : "Ready",
+    "in-progress": isRussian ? "В работе" : "In progress",
+    "review": isRussian ? "Проверка" : "Review",
+    "done": isRussian ? "Готово" : "Done",
+    "blocked": isRussian ? "Заблокировано" : "Blocked"
+  };
+
   const grouped = new Map<Task["status"], Task[]>();
   for (const status of STATUS_ORDER) {
     grouped.set(status, []);
@@ -31,28 +46,29 @@ function renderTaskBoardHtml(tasksFilePath: string, tasks: Task[]): string {
       })
       .join("");
 
-    return `<section class="column"><h3>${escapeHtml(status)}</h3>${cards || "<p class=\"empty\">No tasks</p>"}</section>`;
+    return `<section class="column"><h3>${escapeHtml(statusTitles[status])}</h3>${cards || `<p class="empty">${t.noTasks}</p>`}</section>`;
   }).join("");
 
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="${isRussian ? "ru" : "en"}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Task Board</title>
+  <title>${t.title}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; margin: 0; padding: 16px; }
+    body { font-family: Roboto, "Segoe UI", sans-serif; margin: 0; padding: 16px; background: var(--vscode-editor-background); color: var(--vscode-editor-foreground); }
     .grid { display: grid; grid-template-columns: repeat(3, minmax(220px, 1fr)); gap: 12px; }
-    .column { border: 1px solid #9994; border-radius: 8px; padding: 8px; min-height: 120px; }
-    .column h3 { margin: 4px 0 8px; font-size: 14px; text-transform: uppercase; }
-    .card { display: block; border: 1px solid #9994; border-radius: 6px; padding: 8px; margin-bottom: 8px; text-decoration: none; color: inherit; }
+    .column { border: 1px solid var(--vscode-panel-border); border-radius: 14px; padding: 10px; min-height: 120px; box-shadow: 0 2px 6px rgba(0,0,0,.16); background: var(--vscode-editorWidget-background); }
+    .column h3 { margin: 4px 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing: .4px; color: #78909c; }
+    .card { display: block; border: 0; border-radius: 12px; padding: 10px; margin-bottom: 8px; text-decoration: none; color: inherit; background: rgba(25, 118, 210, .12); }
     .title { font-weight: 600; margin-bottom: 4px; }
     .meta { opacity: 0.8; font-size: 12px; }
     .empty { opacity: 0.7; font-size: 12px; }
   </style>
 </head>
 <body>
-  <h2>Task Board</h2>
+  <h2>${t.title}</h2>
   <div class="grid">${columns}</div>
 </body>
 </html>`;

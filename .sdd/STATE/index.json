@@ -7,6 +7,12 @@
       "title": "SpecFlow for VSCode Extension Core",
       "status": "approved",
       "path": ".sdd/SPECS/0001-specflow-vscode-extension/SPEC.md"
+    },
+    {
+      "id": "0002-specflow-vscode-release-readiness",
+      "title": "SpecFlow for VSCode Release Readiness",
+      "status": "approved",
+      "path": ".sdd/SPECS/0002-specflow-vscode-release-readiness/SPEC.md"
     }
   ]
 }

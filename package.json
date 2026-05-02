@@ -2,9 +2,13 @@
   "name": "specflow-vscode",
   "displayName": "SpecFlow for VSCode",
   "description": "Spec-driven development workspace layer for VSCode",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "specflow",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/specflow-vscode.git"
+  },
   "engines": {
     "vscode": "^1.95.0"
   },
@@ -23,6 +27,7 @@
     "onCommand:specflow.openTaskBoard",
     "onCommand:specflow.openTaskSource",
     "onCommand:specflow.detectCompatibility",
+    "onCommand:specflow.runReleaseQa",
     "onView:specflow.specTree"
   ],
   "main": "./out/extension.js",
@@ -71,13 +76,26 @@
       {
         "command": "specflow.detectCompatibility",
         "title": "SDD: Detect Compatibility"
+      },
+      {
+        "command": "specflow.runReleaseQa",
+        "title": "SDD: Run Release QA"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "specflow",
+          "title": "SpecFlow",
+          "icon": "assets/specflow-activity.svg"
+        }
+      ]
+    },
     "views": {
-      "explorer": [
+      "specflow": [
         {
           "id": "specflow.specTree",
-          "name": "SpecFlow Specs"
+          "name": "Specs"
         }
       ]
     },
@@ -113,9 +131,11 @@
     "watch": "tsc -watch -p ./",
     "lint": "eslint src --ext ts",
     "pretest": "npm run build",
-    "test": "vitest run"
+    "test": "vitest run",
+    "package": "vsce package"
   },
   "devDependencies": {
+    "@vscode/vsce": "^3.6.1",
     "@types/node": "^20.17.0",
     "@types/vscode": "^1.95.0",
     "eslint": "^9.14.0",
