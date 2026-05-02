@@ -1,0 +1,12 @@
+{
+  "generated": false,
+  "note": "This file is a rebuildable cache placeholder. Markdown files are the source of truth.",
+  "specs": [
+    {
+      "id": "0001-specflow-vscode-extension",
+      "title": "SpecFlow for VSCode Extension Core",
+      "status": "approved",
+      "path": ".sdd/SPECS/0001-specflow-vscode-extension/SPEC.md"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "0001-specflow-vscode-extension",
+  "title": "SpecFlow for VSCode Extension Core",
+  "type": "feature",
+  "status": "approved",
+  "priority": "high",
+  "owner": "slava",
+  "createdAt": "2026-04-30",
+  "updatedAt": "2026-04-30",
+  "tags": ["vscode", "sdd", "extension", "markdown", "llm"],
+  "compatibility": {
+    "githubSpecKit": true
+  }
+}

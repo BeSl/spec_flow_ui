@@ -1,0 +1,125 @@
+{
+  "name": "specflow-vscode",
+  "displayName": "SpecFlow for VSCode",
+  "description": "Spec-driven development workspace layer for VSCode",
+  "version": "0.0.1",
+  "publisher": "specflow",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:specflow.hello",
+    "onCommand:specflow.initializeProject",
+    "onCommand:specflow.createSpecification",
+    "onCommand:specflow.openDashboard",
+    "onCommand:specflow.validateProject",
+    "onCommand:specflow.refreshSpecs",
+    "onCommand:specflow.openSpecFile",
+    "onCommand:specflow.generatePrompt",
+    "onCommand:specflow.openTaskBoard",
+    "onCommand:specflow.openTaskSource",
+    "onCommand:specflow.detectCompatibility",
+    "onView:specflow.specTree"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "specflow.hello",
+        "title": "SDD: Hello SpecFlow"
+      },
+      {
+        "command": "specflow.initializeProject",
+        "title": "SDD: Initialize Project"
+      },
+      {
+        "command": "specflow.createSpecification",
+        "title": "SDD: Create Specification"
+      },
+      {
+        "command": "specflow.openDashboard",
+        "title": "SDD: Open Dashboard"
+      },
+      {
+        "command": "specflow.validateProject",
+        "title": "SDD: Validate Project"
+      },
+      {
+        "command": "specflow.refreshSpecs",
+        "title": "SDD: Refresh Specs"
+      },
+      {
+        "command": "specflow.openSpecFile",
+        "title": "SDD: Open Spec File"
+      },
+      {
+        "command": "specflow.generatePrompt",
+        "title": "SDD: Generate Prompt"
+      },
+      {
+        "command": "specflow.openTaskBoard",
+        "title": "SDD: Open Task Board"
+      },
+      {
+        "command": "specflow.openTaskSource",
+        "title": "SDD: Open Task Source"
+      },
+      {
+        "command": "specflow.detectCompatibility",
+        "title": "SDD: Detect Compatibility"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "specflow.specTree",
+          "name": "SpecFlow Specs"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "specflow.refreshSpecs",
+          "when": "view == specflow.specTree",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "specflow.openDashboard",
+          "when": "view == specflow.specTree && viewItem == specNode",
+          "group": "inline"
+        },
+        {
+          "command": "specflow.openSpecFile",
+          "when": "view == specflow.specTree && viewItem == specNode",
+          "group": "navigation"
+        },
+        {
+          "command": "specflow.openTaskBoard",
+          "when": "view == specflow.specTree && viewItem == specNode",
+          "group": "navigation@2"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts",
+    "pretest": "npm run build",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "@types/vscode": "^1.95.0",
+    "eslint": "^9.14.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
+  }
+}
