@@ -13,6 +13,12 @@
       "title": "SpecFlow for VSCode Release Readiness",
       "status": "approved",
       "path": ".sdd/SPECS/0002-specflow-vscode-release-readiness/SPEC.md"
+    },
+    {
+      "id": "0003-spec-creation-and-product-map",
+      "title": "Spec Creation Wizard and Product Map",
+      "status": "done",
+      "path": ".sdd/SPECS/0003-spec-creation-and-product-map/SPEC.md"
     }
   ]
 }

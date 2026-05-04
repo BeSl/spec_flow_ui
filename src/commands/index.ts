@@ -11,6 +11,9 @@ import { buildTaskPrompt } from "../services/promptService";
 import { validateWorkspace } from "../services/validationService";
 import { detectCompatibility } from "../services/compatibilityService";
 import { runReleaseQaChecks } from "../services/releaseQaService";
+import { runCreateSpecificationWizard } from "../wizard/createSpecificationWizard";
+import { createSpecificationInWorkspace } from "../services/specCreationFlow";
+import { openProductMap } from "../webview/productMapPanel";
 
 type CommandRegistration = [string, (...args: unknown[]) => Promise<void>];
 
@@ -25,12 +28,26 @@ export function registerCommands(context: vscode.ExtensionContext, specTreeProvi
         await initializeSddWorkspace();
       }
     ],
-    [
-      "specflow.createSpecification",
-      async () => {
-        await vscode.window.showInformationMessage("SDD: Create Specification is registered.");
+    ["specflow.createSpecification", async () => {
+      await runCreateSpecificationCommand(context, specTreeProvider);
+    }],
+    ["specflow.createChildSpecification", async (specArg?: unknown) => {
+      const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+      if (!workspaceFolder) {
+        await vscode.window.showErrorMessage("Open a workspace folder before creating a child specification.");
+        return;
       }
-    ],
+
+      const parentNode = isSpecTreeNodeArgument(specArg)
+        ? specArg.node
+        : await pickSpecNode(workspaceFolder.uri.fsPath);
+
+      if (!parentNode) {
+        return;
+      }
+
+      await runCreateSpecificationCommand(context, specTreeProvider, parentNode.folderPath);
+    }],
     ["specflow.openDashboard", async (folderPathOrNode?: unknown) => {
       const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
       if (!workspaceFolder) {
@@ -278,6 +295,17 @@ export function registerCommands(context: vscode.ExtensionContext, specTreeProvi
       } else {
         await vscode.window.showWarningMessage("Release QA checks found issues. See 'SpecFlow Release QA' output.");
       }
+    }],
+    ["specflow.openProductMap", async () => {
+      const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+      if (!workspaceFolder) {
+        await vscode.window.showErrorMessage("Open a workspace folder before opening the product map.");
+        return;
+      }
+
+      const tree = await scanSpecTree(workspaceFolder.uri.fsPath);
+      const flat = flattenSpecTree(tree);
+      openProductMap(context, flat);
     }]
   ];
 
@@ -321,4 +349,36 @@ async function pickSpecNode(workspaceRoot: string): Promise<SpecTreeNode | undef
   }
 
   return findSpecNodeByFolderPath(workspaceRoot, picked.detail);
+}
+
+async function runCreateSpecificationCommand(
+  context: vscode.ExtensionContext,
+  specTreeProvider: SpecTreeProvider,
+  parentFolderPath?: string
+): Promise<void> {
+  const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+  if (!workspaceFolder) {
+    await vscode.window.showErrorMessage("Open a workspace folder before creating a specification.");
+    return;
+  }
+
+  const input = await runCreateSpecificationWizard();
+  if (!input) {
+    return;
+  }
+
+  try {
+    const result = await createSpecificationInWorkspace(workspaceFolder.uri.fsPath, input, parentFolderPath);
+    specTreeProvider.refresh();
+
+    const node = await findSpecNodeByFolderPath(workspaceFolder.uri.fsPath, result.folderPath);
+    if (node) {
+      openSpecDashboard(context, node);
+    }
+
+    await vscode.window.showInformationMessage(`Specification created: ${result.specId}`);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to create specification.";
+    await vscode.window.showErrorMessage(message);
+  }
 }

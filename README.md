@@ -46,3 +46,10 @@ blocked
 3. Open **Run and Debug** in VSCode.
 4. Start `Run SpecFlow Extension`.
 5. In Extension Development Host, run commands like `SDD: Open Dashboard` from Command Palette.
+
+## Key Commands
+
+- `SDD: Create Specification` - create a new feature via wizard.
+- `SDD: Create Child Specification` - create a nested spec under a selected parent.
+- `SDD: Open Product Map` - view all product features as cards.
+- `SDD: Open Dashboard` - inspect a selected spec.

@@ -2,12 +2,12 @@
   "name": "specflow-vscode",
   "displayName": "SpecFlow for VSCode",
   "description": "Spec-driven development workspace layer for VSCode",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "specflow",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-org/specflow-vscode.git"
+    "url": "https://github.com/BeSl/spec_flow_ui.git"
   },
   "engines": {
     "vscode": "^1.95.0"
@@ -19,6 +19,7 @@
     "onCommand:specflow.hello",
     "onCommand:specflow.initializeProject",
     "onCommand:specflow.createSpecification",
+    "onCommand:specflow.createChildSpecification",
     "onCommand:specflow.openDashboard",
     "onCommand:specflow.validateProject",
     "onCommand:specflow.refreshSpecs",
@@ -28,6 +29,7 @@
     "onCommand:specflow.openTaskSource",
     "onCommand:specflow.detectCompatibility",
     "onCommand:specflow.runReleaseQa",
+    "onCommand:specflow.openProductMap",
     "onView:specflow.specTree"
   ],
   "main": "./out/extension.js",
@@ -44,6 +46,10 @@
       {
         "command": "specflow.createSpecification",
         "title": "SDD: Create Specification"
+      },
+      {
+        "command": "specflow.createChildSpecification",
+        "title": "SDD: Create Child Specification"
       },
       {
         "command": "specflow.openDashboard",
@@ -80,6 +86,10 @@
       {
         "command": "specflow.runReleaseQa",
         "title": "SDD: Run Release QA"
+      },
+      {
+        "command": "specflow.openProductMap",
+        "title": "SDD: Open Product Map"
       }
     ],
     "viewsContainers": {
@@ -105,6 +115,11 @@
           "command": "specflow.refreshSpecs",
           "when": "view == specflow.specTree",
           "group": "navigation"
+        },
+        {
+          "command": "specflow.openProductMap",
+          "when": "view == specflow.specTree",
+          "group": "navigation@2"
         }
       ],
       "view/item/context": [
@@ -112,6 +127,11 @@
           "command": "specflow.openDashboard",
           "when": "view == specflow.specTree && viewItem == specNode",
           "group": "inline"
+        },
+        {
+          "command": "specflow.createChildSpecification",
+          "when": "view == specflow.specTree && viewItem == specNode",
+          "group": "inline@2"
         },
         {
           "command": "specflow.openSpecFile",
@@ -122,6 +142,11 @@
           "command": "specflow.openTaskBoard",
           "when": "view == specflow.specTree && viewItem == specNode",
           "group": "navigation@2"
+        },
+        {
+          "command": "specflow.openProductMap",
+          "when": "view == specflow.specTree && viewItem == specNode",
+          "group": "navigation@3"
         }
       ]
     }
